@@ -34,9 +34,7 @@ fun DashboardScreen(
     val totalExpense by viewModel.totalExpense.collectAsState()
     val transactions by viewModel.allTransactions.collectAsState()
     val initialCapital by viewModel.initialCapitalState.collectAsState()
-    val income = totalIncome ?: 0.0
-    val expense = totalExpense ?: 0.0
-    val profit = income - expense
+    val profit = totalIncome - totalExpense
     val remainingCapital = initialCapital - profit
     val isBreakEven = initialCapital > 0 && profit >= initialCapital
     val progress = if (initialCapital > 0) (profit / initialCapital).toFloat() else 0f
@@ -116,13 +114,13 @@ fun DashboardScreen(
                 Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(16.dp)) {
                     SummaryCard(
                         title = "Pemasukan",
-                        amount = income,
+                        amount = totalIncome,
                         color = Color(0xFF4CAF50),
                         modifier = Modifier.weight(1f)
                     )
                     SummaryCard(
                         title = "Pengeluaran",
-                        amount = expense,
+                        amount = totalExpense,
                         color = Color(0xFFE53935),
                         modifier = Modifier.weight(1f)
                     )

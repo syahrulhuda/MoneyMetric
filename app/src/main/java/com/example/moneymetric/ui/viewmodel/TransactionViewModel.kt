@@ -8,6 +8,7 @@ import com.example.moneymetric.data.repository.TransactionRepository
 import com.example.moneymetric.data.local.UserPreferences
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
@@ -25,7 +26,8 @@ class TransactionViewModel(
         )
 
     // 2. Total Pemasukan
-    val totalIncome: StateFlow<Double?> = repository.getTotalIncome()
+    val totalIncome: StateFlow<Double> = repository.getTotalIncome()
+        .map { it ?: 0.0 }
         .stateIn(
             scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(5000),
@@ -33,7 +35,8 @@ class TransactionViewModel(
         )
 
     // 3. Total Pengeluaran
-    val totalExpense: StateFlow<Double?> = repository.getTotalExpense()
+    val totalExpense: StateFlow<Double> = repository.getTotalExpense()
+        .map { it ?: 0.0 }
         .stateIn(
             scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(5000),
