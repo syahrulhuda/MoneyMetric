@@ -41,6 +41,7 @@ class TransactionViewModel(
         )
 
     val initialCapitalState: StateFlow<Double> = userPreferences.initialCapital
+        .map { it ?: 0.0 }
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), 0.0)
 
     fun setInitialCapital(amount: Double) {

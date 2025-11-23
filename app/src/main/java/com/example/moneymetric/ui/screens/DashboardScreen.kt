@@ -38,6 +38,8 @@ fun DashboardScreen(
     val expense = totalExpense ?: 0.0
     val profit = income - expense
     val remainingCapital = initialCapital - profit
+    val isBreakEven = initialCapital > 0 && profit >= initialCapital
+    val progress = if (initialCapital > 0) (profit / initialCapital).toFloat() else 0f
 
     Scaffold(
         topBar = {
@@ -97,7 +99,7 @@ fun DashboardScreen(
                             )
                             Spacer(modifier = Modifier.height(8.dp))
                             LinearProgressIndicator(
-                                progress = { progress.coerceIn(0f, 1f) },
+                                progress = progress.coerceIn(0f, 1f),
                                 modifier = Modifier.fillMaxWidth().height(8.dp),
                                 color = Color(0xFF4CAF50),
                             )
