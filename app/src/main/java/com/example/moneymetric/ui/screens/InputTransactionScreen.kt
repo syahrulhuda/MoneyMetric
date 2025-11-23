@@ -11,6 +11,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import com.example.moneymetric.ui.viewmodel.TransactionViewModel
+import com.example.moneymetric.ui.CurrencyAmountInputVisualTransformation
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

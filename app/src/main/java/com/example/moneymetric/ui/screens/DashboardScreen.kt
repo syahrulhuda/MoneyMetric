@@ -30,16 +30,13 @@ fun DashboardScreen(
     viewModel: TransactionViewModel,
     onNavigateToInput: () -> Unit
 ) {
-    // Mengambil data Live
+    val totalIncome by viewModel.totalIncome.collectAsState()
+    val totalExpense by viewModel.totalExpense.collectAsState()
     val transactions by viewModel.allTransactions.collectAsState()
-    // AMBIL DARI VIEWMODEL
     val initialCapital by viewModel.initialCapitalState.collectAsState()
-
     val income = totalIncome ?: 0.0
     val expense = totalExpense ?: 0.0
     val profit = income - expense
-
-// Hapus baris: val initialCapital = 5000000.0 (Hapus hardcode ini!)
     val remainingCapital = initialCapital - profit
 
     Scaffold(
