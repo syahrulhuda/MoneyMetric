@@ -25,7 +25,12 @@ fun AppNavigation() {
 
     // 1. Database & Repository
     val database = AppDatabase.getDatabase(context)
-    val repository = remember { TransactionRepository(database.transactionDao()) }
+    val repository = remember {
+        TransactionRepository(
+            database.transactionDao(),
+            database.debtDao()
+        )
+    }
 
     // 2. UserPreferences (DataStore)
     val userPreferences = remember { UserPreferences(context) }

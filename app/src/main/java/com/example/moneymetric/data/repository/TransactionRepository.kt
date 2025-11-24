@@ -1,33 +1,63 @@
 package com.example.moneymetric.data.repository
 
+import com.example.moneymetric.data.local.DebtDao
+import com.example.moneymetric.data.local.DebtEntity
 import com.example.moneymetric.data.local.TransactionDao
 import com.example.moneymetric.data.local.TransactionEntity
 import kotlinx.coroutines.flow.Flow
 
-class TransactionRepository(private val dao: TransactionDao) {
+// Perhatikan: Sekarang kita minta 2 DAO (TransactionDao DAN DebtDao)
+class TransactionRepository(
+    private val transactionDao: TransactionDao,
+    private val debtDao: DebtDao
+) {
 
-    // Fungsi untuk menambah/edit transaksi
+    // --- BAGIAN TRANSAKSI (TETAP SAMA) ---
     suspend fun insertTransaction(transaction: TransactionEntity) {
-        dao.insertTransaction(transaction)
+        transactionDao.insertTransaction(transaction)
     }
 
-    // Fungsi untuk menghapus transaksi
     suspend fun deleteTransaction(transaction: TransactionEntity) {
-        dao.deleteTransaction(transaction)
+        transactionDao.deleteTransaction(transaction)
     }
 
-    // Mengambil semua data (Real-time update ke UI)
     fun getAllTransactions(): Flow<List<TransactionEntity>> {
-        return dao.getAllTransactions()
+        return transactionDao.getAllTransactions()
     }
 
-    // Mengambil total pemasukan
     fun getTotalIncome(): Flow<Double?> {
-        return dao.getTotalIncome()
+        return transactionDao.getTotalIncome()
     }
 
-    // Mengambil total pengeluaran
     fun getTotalExpense(): Flow<Double?> {
-        return dao.getTotalExpense()
+        return transactionDao.getTotalExpense()
+    }
+
+    // --- BAGIAN UTANG/PIUTANG (BARU) ---
+
+    suspend fun insertDebt(debt: DebtEntity) {
+        debtDao.insertDebt(debt)
+    }
+
+    suspend fun updateDebt(debt: DebtEntity) {
+        debtDao.updateDebt(debt)
+    }
+
+    suspend fun deleteDebt(debt: DebtEntity) {
+        debtDao.deleteDebt(debt)
+    }
+
+    fun getAllDebts(): Flow<List<DebtEntity>> {
+        return debtDao.getAllDebts()
+    }
+
+    fun getTotalDebt(): Flow<Double?> {
+        // Menghitung total utang kita ke orang lain
+        return debtDao.getTotalDebt()
+    }
+
+    fun getTotalReceivable(): Flow<Double?> {
+        // Menghitung total orang lain utang ke kita
+        return debtDao.getTotalReceivable()
     }
 }

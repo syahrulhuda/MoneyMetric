@@ -3,6 +3,7 @@ package com.example.moneymetric.ui.viewmodel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
+import com.example.moneymetric.data.local.DebtEntity
 import com.example.moneymetric.data.local.TransactionEntity
 import com.example.moneymetric.data.repository.TransactionRepository
 import com.example.moneymetric.data.local.UserPreferences
@@ -17,7 +18,9 @@ class TransactionViewModel(
     private val userPreferences: UserPreferences
 ) : ViewModel() {
 
-    // 1. Data Transaksi (List) yang selalu update otomatis (Hot Flow)
+    // BAGIAN 1: TRANSAKSI (KODE LAMA - TETAP)
+
+    // 1. Data Transaksi (List)
     val allTransactions: StateFlow<List<TransactionEntity>> = repository.getAllTransactions()
         .stateIn(
             scope = viewModelScope,
@@ -43,6 +46,7 @@ class TransactionViewModel(
             initialValue = 0.0
         )
 
+    // 4. Modal Awal
     val initialCapitalState: StateFlow<Double> = userPreferences.initialCapital
         .map { it ?: 0.0 }
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), 0.0)
@@ -53,7 +57,7 @@ class TransactionViewModel(
         }
     }
 
-    // Fungsi untuk Simpan Data (Dipanggil saat tombol Simpan ditekan)
+    // Simpan Transaksi
     fun saveTransaction(amount: Double, type: String, category: String, description: String) {
         viewModelScope.launch {
             val newTransaction = TransactionEntity(
@@ -67,17 +71,73 @@ class TransactionViewModel(
         }
     }
 
-    // Fungsi Hapus Data
+    // Hapus Transaksi
     fun deleteTransaction(transaction: TransactionEntity) {
         viewModelScope.launch {
             repository.deleteTransaction(transaction)
         }
     }
+
+    // BAGIAN 2: UTANG / PIUTANG (KODE BARU)
+
+    // 1. List Semua Utang/Piutang
+    val allDebts: StateFlow<List<DebtEntity>> = repository.getAllDebts()
+        .stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(5000),
+            initialValue = emptyList()
+        )
+
+    // 2. Total Utang (Kita berutang ke orang)
+    val totalDebt: StateFlow<Double> = repository.getTotalDebt()
+        .map { it ?: 0.0 } // Handle null jadi 0.0
+        .stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(5000),
+            initialValue = 0.0
+        )
+
+    // 3. Total Piutang (Orang berutang ke kita)
+    val totalReceivable: StateFlow<Double> = repository.getTotalReceivable()
+        .map { it ?: 0.0 } // Handle null jadi 0.0
+        .stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(5000),
+            initialValue = 0.0
+        )
+
+    // Fungsi Simpan Utang Baru
+    fun saveDebt(personName: String, amount: Double, type: String, description: String, dueDate: Long?) {
+        viewModelScope.launch {
+            val newDebt = DebtEntity(
+                personName = personName,
+                amount = amount,
+                type = type, // "DEBT" atau "RECEIVABLE"
+                description = description,
+                dueDate = dueDate,
+                isPaid = false // Default belum lunas
+            )
+            repository.insertDebt(newDebt)
+        }
+    }
+
+    // Fungsi Tandai Lunas / Belum Lunas (Toggle)
+    fun toggleDebtStatus(debt: DebtEntity) {
+        viewModelScope.launch {
+            val updatedDebt = debt.copy(isPaid = !debt.isPaid)
+            repository.updateDebt(updatedDebt)
+        }
+    }
+
+    // Fungsi Hapus Utang
+    fun deleteDebt(debt: DebtEntity) {
+        viewModelScope.launch {
+            repository.deleteDebt(debt)
+        }
+    }
 }
 
-// --- PENTING: FACTORY ---
-// Karena ViewModel kita butuh 'Repository' di dalam kurung (), kita butuh "Pabrik" (Factory)
-// untuk membuatnya. Ini standar di Android jika tidak pakai library Hilt/Koin.
+// Factory (Tetap Sama)
 class TransactionViewModelFactory(
     private val repository: TransactionRepository,
     private val userPreferences: UserPreferences
@@ -85,7 +145,6 @@ class TransactionViewModelFactory(
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(TransactionViewModel::class.java)) {
             @Suppress("UNCHECKED_CAST")
-            // Masukkan userPreferences ke dalam ViewModel
             return TransactionViewModel(repository, userPreferences) as T
         }
         throw IllegalArgumentException("Unknown ViewModel class")
