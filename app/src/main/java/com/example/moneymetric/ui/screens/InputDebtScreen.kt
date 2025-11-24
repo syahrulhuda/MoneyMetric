@@ -25,6 +25,7 @@ fun InputDebtScreen(
     var amount by remember { mutableStateOf("") }
     var description by remember { mutableStateOf("") }
     var isReceivable by remember { mutableStateOf(initialType != "debt") }
+    var isSaving by remember { mutableStateOf(false) } // State untuk mencegah klik ganda
     val primaryColor = if (isReceivable) Color(0xFF2196F3) else Color(0xFFFF9800)
     val titleText = if (isReceivable) "Catat Piutang (Aset)" else "Catat Utang (Kewajiban)"
 
@@ -111,6 +112,9 @@ fun InputDebtScreen(
             // 5. Tombol Simpan
             Button(
                 onClick = {
+                    if (isSaving) return@Button // Jika sedang menyimpan, abaikan klik
+                    isSaving = true
+
                     val amountDouble = amount.toDoubleOrNull() ?: 0.0
                     if (amountDouble > 0 && personName.isNotEmpty()) {
                         viewModel.saveDebt(
@@ -127,7 +131,7 @@ fun InputDebtScreen(
                     .fillMaxWidth()
                     .height(50.dp),
                 colors = ButtonDefaults.buttonColors(containerColor = primaryColor),
-                enabled = amount.isNotEmpty() && personName.isNotEmpty()
+                enabled = amount.isNotEmpty() && personName.isNotEmpty() && !isSaving
             ) {
                 Text("SIMPAN", color = Color.White)
             }
