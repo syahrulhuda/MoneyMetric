@@ -10,6 +10,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.foundation.Image
+import androidx.compose.ui.res.painterResource
+import com.example.moneymetric.R
 import com.example.moneymetric.ui.CurrencyAmountInputVisualTransformation
 import com.example.moneymetric.ui.viewmodel.TransactionViewModel
 
@@ -27,6 +30,13 @@ fun OnboardingScreen(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
+        Image(
+            painter = painterResource(id = R.mipmap.ic_launcher),
+            contentDescription = "Logo Aplikasi",
+            modifier = Modifier
+                .size(120.dp)
+                .padding(bottom = 16.dp)
+        )
         Text("Selamat Datang!", fontSize = 24.sp, fontWeight = FontWeight.Bold)
         Text("Mari mulai langkah suksesmu.", fontSize = 16.sp)
 
