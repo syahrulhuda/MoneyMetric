@@ -6,7 +6,6 @@ import androidx.lifecycle.viewModelScope
 import com.example.moneymetric.data.local.DebtEntity
 import com.example.moneymetric.data.local.TransactionEntity
 import com.example.moneymetric.data.repository.TransactionRepository
-import com.example.moneymetric.data.local.UserPreferences
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.map
