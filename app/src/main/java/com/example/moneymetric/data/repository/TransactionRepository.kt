@@ -1,18 +1,19 @@
 package com.example.moneymetric.data.repository
-import com.example.moneymetric.data.local.KEY_INITIAL_CAPITAL
-import com.example.moneymetric.data.local.SettingDao
-import com.example.moneymetric.data.local.SettingEntity
-import kotlinx.coroutines.flow.map
+
 import com.example.moneymetric.data.local.DebtDao
 import com.example.moneymetric.data.local.DebtEntity
 import com.example.moneymetric.data.local.TransactionDao
 import com.example.moneymetric.data.local.TransactionEntity
+import com.example.moneymetric.data.local.KEY_INITIAL_CAPITAL
+import com.example.moneymetric.data.local.SettingDao
+import com.example.moneymetric.data.local.SettingEntity
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 
-// Perhatikan: Sekarang kita minta 2 DAO (TransactionDao DAN DebtDao)
 class TransactionRepository(
     private val transactionDao: TransactionDao,
-    private val debtDao: DebtDao
+    private val debtDao: DebtDao,
+    private val settingDao: SettingDao
 ) {
 
     // --- BAGIAN TRANSAKSI (TETAP SAMA) ---
@@ -63,8 +64,7 @@ class TransactionRepository(
         // Menghitung total orang lain utang ke kita
         return debtDao.getTotalReceivable()
     }
-}
-
+    
     // --- BAGIAN MODAL AWAL (DARI SETTINGS) ---
 
     fun getInitialCapital(): Flow<Double?> {
@@ -76,4 +76,3 @@ class TransactionRepository(
         settingDao.saveSetting(setting)
     }
 }
-
