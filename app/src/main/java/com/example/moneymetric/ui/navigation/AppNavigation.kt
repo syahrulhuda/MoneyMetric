@@ -28,16 +28,14 @@ fun AppNavigation() {
     val repository = remember {
         TransactionRepository(
             database.transactionDao(),
-            database.debtDao()
+            database.debtDao(),
+            database.settingDao()
         )
     }
 
-    // 2. UserPreferences (DataStore)
-    val userPreferences = remember { UserPreferences(context) }
-
-    // 3. ViewModel (Sekarang pakai 2 parameter!)
+    // 2. ViewModel
     val viewModel: TransactionViewModel = viewModel(
-        factory = TransactionViewModelFactory(repository, userPreferences)
+        factory = TransactionViewModelFactory(repository)
     )
 
     // 4. Cek Status Modal Awal (untuk menentukan halaman start)

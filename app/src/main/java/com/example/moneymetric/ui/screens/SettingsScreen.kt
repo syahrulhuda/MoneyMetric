@@ -19,6 +19,14 @@ import com.example.moneymetric.ui.viewmodel.TransactionViewModel
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
+import androidx.compose.runtime.setValue
+import androidx.compose.runtime.getValue
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.TextButton
+import androidx.compose.material3.TextField
+import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.Alignment
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -28,6 +36,8 @@ fun SettingsScreen(
 ) {
     val context = LocalContext.current
     val backupManager = remember { BackupRestoreManager(context) }
+    var showEditDialog by remember { mutableStateOf(false) }
+    var newCapitalText by remember { mutableStateOf("") }
 
     // --- LAUNCHER UNTUK BACKUP (Simpan File) ---
     val backupLauncher = rememberLauncherForActivityResult(
@@ -56,6 +66,42 @@ fun SettingsScreen(
             // Matikan proses lama
             Runtime.getRuntime().exit(0)
         }
+    }
+
+    // --- DIALOG UNTUK EDIT MODAL AWAL ---
+    if (showEditDialog) {
+        AlertDialog(
+            onDismissRequest = { showEditDialog = false },
+            title = { Text("Edit Modal Awal") },
+            text = {
+                TextField(
+                    value = newCapitalText,
+                    onValueChange = { newCapitalText = it },
+                    label = { Text("Jumlah Modal Baru") },
+                    singleLine = true,
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
+                )
+            },
+            confirmButton = {
+                TextButton(
+                    onClick = {
+                        val newAmount = newCapitalText.toDoubleOrNull()
+                        if (newAmount != null) {
+                            viewModel.setInitialCapital(newAmount)
+                        }
+                        showEditDialog = false
+                        newCapitalText = "" // Reset text
+                    }
+                ) {
+                    Text("Simpan")
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = { showEditDialog = false }) {
+                    Text("Batal")
+                }
+            }
+        )
     }
 
     Scaffold(
@@ -158,9 +204,9 @@ fun SettingsScreen(
                     )
                     Spacer(modifier = Modifier.height(12.dp))
 
-                    // Tombol ini masih dummy, nanti bisa ditambah dialog
+                    // Tombol ini sekarang berfungsi
                     Button(
-                        onClick = { /* Nanti tambah logika edit modal */ },
+                        onClick = { showEditDialog = true },
                         colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.secondary)
                     ) {
                         Text("Edit Modal Awal")

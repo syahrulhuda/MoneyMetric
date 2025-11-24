@@ -14,8 +14,7 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
 class TransactionViewModel(
-    private val repository: TransactionRepository,
-    private val userPreferences: UserPreferences
+    private val repository: TransactionRepository
 ) : ViewModel() {
 
     // BAGIAN 1: TRANSAKSI (KODE LAMA - TETAP)
@@ -46,14 +45,14 @@ class TransactionViewModel(
             initialValue = 0.0
         )
 
-    // 4. Modal Awal
-    val initialCapitalState: StateFlow<Double> = userPreferences.initialCapital
+    // 4. Modal Awal (BARU: dari Repository)
+    val initialCapitalState: StateFlow<Double> = repository.getInitialCapital()
         .map { it ?: 0.0 }
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), 0.0)
 
     fun setInitialCapital(amount: Double) {
         viewModelScope.launch {
-            userPreferences.setInitialCapital(amount)
+            repository.setInitialCapital(amount)
         }
     }
 
@@ -137,15 +136,14 @@ class TransactionViewModel(
     }
 }
 
-// Factory (Tetap Sama)
+// Factory (BARU: Disederhanakan)
 class TransactionViewModelFactory(
-    private val repository: TransactionRepository,
-    private val userPreferences: UserPreferences
+    private val repository: TransactionRepository
 ) : ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(TransactionViewModel::class.java)) {
             @Suppress("UNCHECKED_CAST")
-            return TransactionViewModel(repository, userPreferences) as T
+            return TransactionViewModel(repository) as T
         }
         throw IllegalArgumentException("Unknown ViewModel class")
     }
