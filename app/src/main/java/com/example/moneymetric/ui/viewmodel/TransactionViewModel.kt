@@ -105,15 +105,15 @@ class TransactionViewModel(
         )
 
     // Fungsi Simpan Utang Baru
-    fun saveDebt(personName: String, amount: Double, type: String, description: String, dueDate: Long?) {
+    fun saveDebt(personName: String, amount: Double, type: String, description: String) {
         viewModelScope.launch {
             val newDebt = DebtEntity(
                 personName = personName,
                 amount = amount,
                 type = type, // "DEBT" atau "RECEIVABLE"
                 description = description,
-                dueDate = dueDate,
-                isPaid = false // Default belum lunas
+                isPaid = false, // Default belum lunas
+                creationDate = System.currentTimeMillis()
             )
             repository.insertDebt(newDebt)
         }

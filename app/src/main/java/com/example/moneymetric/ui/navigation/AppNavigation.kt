@@ -10,7 +10,6 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.moneymetric.data.local.AppDatabase
-import com.example.moneymetric.data.local.UserPreferences
 import com.example.moneymetric.data.repository.TransactionRepository
 import com.example.moneymetric.ui.screens.DashboardScreen
 import com.example.moneymetric.ui.screens.InputTransactionScreen

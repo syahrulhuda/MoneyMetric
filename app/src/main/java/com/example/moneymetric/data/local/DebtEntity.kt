@@ -8,8 +8,8 @@ data class DebtEntity(
     @PrimaryKey(autoGenerate = true) val id: Int = 0,
     val personName: String,         // Nama orang (misal: "Bu Siti")
     val amount: Double,             // Jumlah utang
-    val type: String,               // "PAYABLE" (Kita ngutang) atau "RECEIVABLE" (Orang ngutang)
-    val dueDate: Long?,             // Tanggal jatuh tempo (opsional)
+    val type: String,               // "DEBT" atau "RECEIVABLE"
     val isPaid: Boolean = false,    // Status lunas?
-    val description: String         // Catatan (misal: "Beli Gula")
+    val description: String,        // Catatan (misal: "Beli Gula")
+    val creationDate: Long          // Tanggal dibuat
 )

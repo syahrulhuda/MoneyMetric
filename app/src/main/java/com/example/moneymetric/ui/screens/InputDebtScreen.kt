@@ -121,8 +121,7 @@ fun InputDebtScreen(
                             personName = personName,
                             amount = amountDouble,
                             type = if (isReceivable) "RECEIVABLE" else "DEBT",
-                            description = description,
-                            dueDate = null // Nanti bisa dikembangkan pakai DatePicker
+                            description = description
                         )
                         onNavigateBack()
                     }
