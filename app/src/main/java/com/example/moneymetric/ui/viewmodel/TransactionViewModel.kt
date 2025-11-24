@@ -107,6 +107,7 @@ class TransactionViewModel(
     // Fungsi Simpan Utang Baru
     fun saveDebt(personName: String, amount: Double, type: String, description: String) {
         viewModelScope.launch {
+            // 1. Simpan data utang/piutang
             val newDebt = DebtEntity(
                 personName = personName,
                 amount = amount,
@@ -116,6 +117,26 @@ class TransactionViewModel(
                 creationDate = System.currentTimeMillis()
             )
             repository.insertDebt(newDebt)
+
+            // 2. Buat transaksi otomatis yang sesuai
+            when (type) {
+                "RECEIVABLE" -> { // Kita memberi pinjaman -> Uang Keluar
+                    saveTransaction(
+                        amount = amount,
+                        type = "EXPENSE",
+                        category = "Piutang",
+                        description = "Memberi pinjaman ke $personName"
+                    )
+                }
+                "DEBT" -> { // Kita menerima pinjaman -> Uang Masuk
+                    saveTransaction(
+                        amount = amount,
+                        type = "INCOME",
+                        category = "Utang",
+                        description = "Menerima pinjaman dari $personName"
+                    )
+                }
+            }
         }
     }
 
@@ -124,6 +145,28 @@ class TransactionViewModel(
         viewModelScope.launch {
             val updatedDebt = debt.copy(isPaid = !debt.isPaid)
             repository.updateDebt(updatedDebt)
+
+            // Jika status BARU adalah LUNAS, buat transaksi
+            if (updatedDebt.isPaid) {
+                when (debt.type) {
+                    "RECEIVABLE" -> { // Orang bayar utangnya ke kita -> Uang Masuk
+                        saveTransaction(
+                            amount = debt.amount,
+                            type = "INCOME",
+                            category = "Pelunasan Piutang",
+                            description = "Pelunasan dari ${debt.personName}"
+                        )
+                    }
+                    "DEBT" -> { // Kita bayar utang -> Uang Keluar
+                        saveTransaction(
+                            amount = debt.amount,
+                            type = "EXPENSE",
+                            category = "Pembayaran Utang",
+                            description = "Membayar utang ke ${debt.personName}"
+                        )
+                    }
+                }
+            }
         }
     }
 
