@@ -37,22 +37,30 @@ class BackupRestoreManager(private val context: Context) {
 
     fun restoreData(uri: Uri) {
         try {
-            // TUTUP KONEKSI DATABASE SEBELUM RESTORE
+            // 1. TUTUP KONEKSI DATABASE
             AppDatabase.closeInstance()
 
+            // 2. HAPUS SEMUA FILE DATABASE LAMA (PENTING!)
             val dbFile = context.getDatabasePath(dbName)
+            val walFile = File(dbFile.path + "-wal")
+            val shmFile = File(dbFile.path + "-shm")
 
-            // 2. Buka stream dari file backup yang dipilih user
+            if (dbFile.exists()) dbFile.delete()
+            if (walFile.exists()) walFile.delete()
+            if (shmFile.exists()) shmFile.delete()
+
+            // 3. Buka stream dari file backup yang dipilih user
             val inputStream = context.contentResolver.openInputStream(uri)
             val outputStream = FileOutputStream(dbFile)
 
-            // 3. Timpa database lama
+            // 4. Timpa database lama dengan yang baru
             outputStream.use { output ->
                 inputStream?.use { input ->
                     input.copyTo(output)
                 }
             }
 
+            // Pesan yang lebih akurat
             Toast.makeText(context, "✅ Data Pulih! Aplikasi akan dimulai ulang.", Toast.LENGTH_LONG).show()
 
         } catch (e: Exception) {
