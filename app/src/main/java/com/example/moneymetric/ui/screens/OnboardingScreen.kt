@@ -34,17 +34,17 @@ fun OnboardingScreen(
             painter = painterResource(R.drawable.moneymetriclogo),
             contentDescription = "Logo Aplikasi",
             modifier = Modifier
-                .size(45.dp)
-                .padding(bottom = 16.dp)
+                .size(180.dp)
+                .padding(bottom = 5.dp)
         )
-        Text("Selamat Datang di MoneyMetric", fontSize = 22.sp, fontWeight = FontWeight.Bold)
-        Text("Measure your Money Usage", fontSize = 15.sp)
+        Text("Measure your Money Usage", fontSize = 24.sp, fontWeight = FontWeight.Bold)
 
-        Spacer(modifier = Modifier.height(25.dp))
+        Spacer(modifier = Modifier.height(64.dp))
 
+        Text("Mari mulai langkah suksesmu.", fontSize = 16.sp)
         Text("Berapa Modal Awal Anda?", fontWeight = FontWeight.SemiBold)
 
-        Spacer(modifier = Modifier.height(15.dp))
+        Spacer(modifier = Modifier.height(16.dp))
 
         OutlinedTextField(
             value = capitalInput,
@@ -55,7 +55,7 @@ fun OnboardingScreen(
             modifier = Modifier.fillMaxWidth()
         )
 
-        Spacer(modifier = Modifier.height(20.dp))
+        Spacer(modifier = Modifier.height(24.dp))
 
         Button(
             onClick = {
