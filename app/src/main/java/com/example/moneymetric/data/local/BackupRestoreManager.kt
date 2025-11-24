@@ -37,8 +37,8 @@ class BackupRestoreManager(private val context: Context) {
 
     fun restoreData(uri: Uri) {
         try {
-            // 1. Validasi file (Cek apakah nama file berakhiran .db atau sejenisnya - opsional)
-            // Untuk simpelnya, kita langsung timpa saja.
+            // TUTUP KONEKSI DATABASE SEBELUM RESTORE
+            AppDatabase.closeInstance()
 
             val dbFile = context.getDatabasePath(dbName)
 
@@ -53,10 +53,8 @@ class BackupRestoreManager(private val context: Context) {
                 }
             }
 
-            Toast.makeText(context, "✅ Data Pulih! Silakan Restart Aplikasi.", Toast.LENGTH_LONG).show()
+            Toast.makeText(context, "✅ Data Pulih! Aplikasi akan dimulai ulang.", Toast.LENGTH_LONG).show()
 
-            // Opsional: Paksa tutup aplikasi agar database reload saat dibuka lagi
-            // System.exit(0)
         } catch (e: Exception) {
             e.printStackTrace()
             Toast.makeText(context, "❌ Gagal Restore: ${e.message}", Toast.LENGTH_LONG).show()

@@ -40,7 +40,22 @@ fun SettingsScreen(
     val restoreLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.OpenDocument()
     ) { uri ->
-        uri?.let { backupManager.restoreData(it) }
+        uri?.let {
+            backupManager.restoreData(it)
+
+            // --- KODE PENTING UNTUK RESTART APLIKASI ---
+            // Dapatkan package manager
+            val packageManager = context.packageManager
+            // Buat intent untuk membuka launcher activity (activity utama)
+            val intent = packageManager.getLaunchIntentForPackage(context.packageName)
+            val componentName = intent!!.component
+            // Buat intent yang akan me-restart task
+            val mainIntent = Intent.makeRestartActivityTask(componentName)
+            // Jalankan intent
+            context.startActivity(mainIntent)
+            // Matikan proses lama
+            Runtime.getRuntime().exit(0)
+        }
     }
 
     Scaffold(
