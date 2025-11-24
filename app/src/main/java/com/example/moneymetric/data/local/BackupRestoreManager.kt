@@ -14,14 +14,17 @@ class BackupRestoreManager(private val context: Context) {
 
     fun backupData(uri: Uri) {
         try {
-            // 1. Cari file database asli di HP
+            // 1. TUTUP DATABASE UNTUK MEMASTIKAN FILE KONSISTEN (checkpoint WAL)
+            AppDatabase.closeInstance()
+
+            // 2. Cari file database asli di HP
             val dbFile = context.getDatabasePath(dbName)
 
-            // 2. Buka aliran data (Stream)
+            // 3. Buka aliran data (Stream)
             val inputStream = FileInputStream(dbFile)
             val outputStream = context.contentResolver.openOutputStream(uri)
 
-            // 3. Salin data
+            // 4. Salin data
             outputStream?.use { output ->
                 inputStream.use { input ->
                     input.copyTo(output)
