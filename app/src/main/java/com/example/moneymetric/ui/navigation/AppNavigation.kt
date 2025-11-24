@@ -92,5 +92,15 @@ fun AppNavigation() {
                 initialType = type
             )
         }
+
+        // Halaman 4: SETTINGS
+        composable("settings") {
+            com.example.moneymetric.ui.screens.SettingsScreen(
+                viewModel = viewModel,
+                onNavigateBack = {
+                    navController.popBackStack()
+                }
+            )
+        }
     }
 }

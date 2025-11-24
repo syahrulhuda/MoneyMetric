@@ -10,6 +10,7 @@ import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ArrowDownward
 import androidx.compose.material.icons.filled.ArrowUpward
 import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -52,6 +53,17 @@ fun DashboardScreen(
         topBar = {
             TopAppBar(
                 title = { Text("MoneyMetric", fontWeight = FontWeight.Bold) },
+                // --- TAMBAHAN BARU: Tombol Settings ---
+                actions = {
+                    IconButton(onClick = { onNavigateToInput("settings") }) {
+                        Icon(
+                            imageVector = Icons.Default.Settings, // Pastikan import Icons.Default.Settings
+                            contentDescription = "Pengaturan",
+                            tint = MaterialTheme.colorScheme.onPrimaryContainer
+                        )
+                    }
+                },
+                // --------------------------------------
                 colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = MaterialTheme.colorScheme.primaryContainer,
                     titleContentColor = MaterialTheme.colorScheme.onPrimaryContainer
