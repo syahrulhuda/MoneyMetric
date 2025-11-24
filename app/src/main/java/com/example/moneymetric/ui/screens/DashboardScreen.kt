@@ -21,7 +21,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.moneymetric.data.local.TransactionEntity
 import com.example.moneymetric.ui.viewmodel.TransactionViewModel
-// Pastikan file DashboardMenuOverlay sudah dibuat di folder ui/components
 import com.example.moneymetric.ui.components.DashboardMenuOverlay
 import java.text.NumberFormat
 import java.util.*
@@ -30,7 +29,7 @@ import java.util.*
 @Composable
 fun DashboardScreen(
     viewModel: TransactionViewModel,
-    onNavigateToInput: (String) -> Unit // Sekarang menerima String (Route)
+    onNavigateToInput: (String) -> Unit
 ) {
     // Data Live dari ViewModel
     val totalIncome by viewModel.totalIncome.collectAsState()
@@ -172,7 +171,7 @@ fun DashboardScreen(
     }
 }
 
-// --- KOMPONEN HELPER (Tetap sama) ---
+// --- KOMPONEN HELPER ---
 
 @Composable
 fun SummaryCard(title: String, amount: Double, color: Color, modifier: Modifier = Modifier) {

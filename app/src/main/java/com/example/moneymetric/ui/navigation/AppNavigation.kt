@@ -67,29 +67,29 @@ fun AppNavigation() {
         composable("dashboard") {
             DashboardScreen(
                 viewModel = viewModel,
-                onNavigateToInput = {
-                    navController.navigate("input_transaction")
+                onNavigateToInput = { route ->
+                    navController.navigate(route)
                 }
             )
         }
 
         // Halaman 2: INPUT
-        composable("input_transaction") {
-            InputTransactionScreen(
+        composable("input_transaction/{type}") { backStackEntry ->
+            val type = backStackEntry.arguments?.getString("type")
+            com.example.moneymetric.ui.screens.InputTransactionScreen(
                 viewModel = viewModel,
-                onNavigateBack = {
-                    navController.popBackStack()
-                }
+                onNavigateBack = { navController.popBackStack() },
+                initialType = type
             )
         }
 
         // Halaman 3: INPUT UTANG
-        composable("input_debt") {
+        composable("input_debt/{type}") { backStackEntry ->
+            val type = backStackEntry.arguments?.getString("type")
             com.example.moneymetric.ui.screens.InputDebtScreen(
                 viewModel = viewModel,
-                onNavigateBack = {
-                    navController.popBackStack()
-                }
+                onNavigateBack = { navController.popBackStack() },
+                initialType = type
             )
         }
     }
