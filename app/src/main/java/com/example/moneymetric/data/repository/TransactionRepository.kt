@@ -1,5 +1,8 @@
 package com.example.moneymetric.data.repository
-
+import com.example.moneymetric.data.local.KEY_INITIAL_CAPITAL
+import com.example.moneymetric.data.local.SettingDao
+import com.example.moneymetric.data.local.SettingEntity
+import kotlinx.coroutines.flow.map
 import com.example.moneymetric.data.local.DebtDao
 import com.example.moneymetric.data.local.DebtEntity
 import com.example.moneymetric.data.local.TransactionDao
@@ -61,3 +64,16 @@ class TransactionRepository(
         return debtDao.getTotalReceivable()
     }
 }
+
+    // --- BAGIAN MODAL AWAL (DARI SETTINGS) ---
+
+    fun getInitialCapital(): Flow<Double?> {
+        return settingDao.getSetting(KEY_INITIAL_CAPITAL).map { it?.value?.toDoubleOrNull() }
+    }
+
+    suspend fun setInitialCapital(amount: Double) {
+        val setting = SettingEntity(key = KEY_INITIAL_CAPITAL, value = amount.toString())
+        settingDao.saveSetting(setting)
+    }
+}
+

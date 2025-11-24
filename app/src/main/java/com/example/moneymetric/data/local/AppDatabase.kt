@@ -5,12 +5,13 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 
-@Database(entities = [TransactionEntity::class, DebtEntity::class], version = 2, exportSchema = false)
+@Database(entities = [TransactionEntity::class, DebtEntity::class, SettingEntity::class], version = 3, exportSchema = false)
 abstract class AppDatabase : RoomDatabase() {
 
     // Daftarkan DAO yang tadi kita buat
     abstract fun transactionDao(): TransactionDao
     abstract fun debtDao(): DebtDao
+    abstract fun settingDao(): SettingDao
 
     companion object {
         @Volatile
