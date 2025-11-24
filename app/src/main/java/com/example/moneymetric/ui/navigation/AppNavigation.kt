@@ -56,7 +56,6 @@ fun AppNavigation() {
             OnboardingScreen(
                 viewModel = viewModel,
                 onFinish = {
-                    // Hapus history onboarding agar tidak bisa back
                     navController.navigate("dashboard") {
                         popUpTo("onboarding") { inclusive = true }
                     }
@@ -77,6 +76,16 @@ fun AppNavigation() {
         // Halaman 2: INPUT
         composable("input_transaction") {
             InputTransactionScreen(
+                viewModel = viewModel,
+                onNavigateBack = {
+                    navController.popBackStack()
+                }
+            )
+        }
+
+        // Halaman 3: INPUT UTANG
+        composable("input_debt") {
+            com.example.moneymetric.ui.screens.InputDebtScreen(
                 viewModel = viewModel,
                 onNavigateBack = {
                     navController.popBackStack()

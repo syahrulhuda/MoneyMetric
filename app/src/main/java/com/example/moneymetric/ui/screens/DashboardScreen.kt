@@ -21,6 +21,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.moneymetric.data.local.TransactionEntity
 import com.example.moneymetric.ui.viewmodel.TransactionViewModel
+// Pastikan file DashboardMenuOverlay sudah dibuat di folder ui/components
+import com.example.moneymetric.ui.components.DashboardMenuOverlay
 import java.text.NumberFormat
 import java.util.*
 
@@ -28,16 +30,22 @@ import java.util.*
 @Composable
 fun DashboardScreen(
     viewModel: TransactionViewModel,
-    onNavigateToInput: () -> Unit
+    onNavigateToInput: (String) -> Unit // Sekarang menerima String (Route)
 ) {
+    // Data Live dari ViewModel
     val totalIncome by viewModel.totalIncome.collectAsState()
     val totalExpense by viewModel.totalExpense.collectAsState()
     val transactions by viewModel.allTransactions.collectAsState()
     val initialCapital by viewModel.initialCapitalState.collectAsState()
+
+    // Perhitungan Logika
     val profit = totalIncome - totalExpense
     val remainingCapital = initialCapital - profit
     val isBreakEven = initialCapital > 0 && profit >= initialCapital
     val progress = if (initialCapital > 0) (profit / initialCapital).toFloat() else 0f
+
+    // State untuk Menu Overlay
+    var showMenu by remember { mutableStateOf(false) }
 
     Scaffold(
         topBar = {
@@ -51,113 +59,128 @@ fun DashboardScreen(
         },
         floatingActionButton = {
             FloatingActionButton(
-                onClick = onNavigateToInput,
+                onClick = { showMenu = true }, // 1. Buka Menu saat diklik
                 containerColor = MaterialTheme.colorScheme.primary
             ) {
                 Icon(Icons.Default.Add, contentDescription = "Tambah", tint = Color.White)
             }
         }
     ) { innerPadding ->
-        LazyColumn(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(innerPadding)
-                .padding(16.dp),
-            verticalArrangement = Arrangement.spacedBy(16.dp)
-        ) {
 
-            // 1. KARTU BALIK MODAL
-            item {
-                Card(
-                    elevation = CardDefaults.cardElevation(4.dp),
-                    colors = CardDefaults.cardColors(containerColor = Color.White), // Kartu Putih
-                    modifier = Modifier.fillMaxWidth()
-                ) {
-                    Column(modifier = Modifier.padding(16.dp)) {
-                        // Paksa warna teks jadi Abu-abu Gelap
-                        Text("Status Balik Modal", fontSize = 14.sp, color = Color.DarkGray)
-                        Spacer(modifier = Modifier.height(8.dp))
+        // BOX UTAMA: Wadah untuk menumpuk Dashboard (Bawah) dan Overlay (Atas)
+        Box(modifier = Modifier.fillMaxSize()) {
 
-                        if (isBreakEven) {
-                            Text(
-                                "🎉 SUDAH BALIK MODAL!",
-                                fontSize = 20.sp,
-                                fontWeight = FontWeight.Bold,
-                                color = Color(0xFF4CAF50)
-                            )
-                            // Paksa warna teks jadi Hitam
-                            Text("Untung Bersih: ${formatRupiah(profit - initialCapital)}", color = Color.Black)
-                        } else {
-                            // Paksa warna teks jadi Hitam
-                            Text(
-                                "Kurang: ${formatRupiah(remainingCapital)}",
-                                fontSize = 24.sp,
-                                fontWeight = FontWeight.Bold,
-                                color = Color.Black
-                            )
+            // --- LAPISAN 1: KONTEN DASHBOARD ---
+            LazyColumn(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(innerPadding)
+                    .padding(16.dp),
+                verticalArrangement = Arrangement.spacedBy(16.dp)
+            ) {
+
+                // 1. KARTU BALIK MODAL
+                item {
+                    Card(
+                        elevation = CardDefaults.cardElevation(4.dp),
+                        colors = CardDefaults.cardColors(containerColor = Color.White),
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        Column(modifier = Modifier.padding(16.dp)) {
+                            Text("Status Balik Modal", fontSize = 14.sp, color = Color.DarkGray)
                             Spacer(modifier = Modifier.height(8.dp))
-                            LinearProgressIndicator(
-                                progress = progress.coerceIn(0f, 1f),
-                                modifier = Modifier.fillMaxWidth().height(8.dp),
-                                color = Color(0xFF4CAF50),
-                            )
-                            Spacer(modifier = Modifier.height(4.dp))
-                            // Paksa warna teks jadi Abu-abu
-                            Text("Modal Kembali: ${(progress * 100).toInt()}%", fontSize = 12.sp, color = Color.Gray)
+
+                            if (isBreakEven) {
+                                Text(
+                                    "🎉 SUDAH BALIK MODAL!",
+                                    fontSize = 20.sp,
+                                    fontWeight = FontWeight.Bold,
+                                    color = Color(0xFF4CAF50)
+                                )
+                                Text("Untung Bersih: ${formatRupiah(profit - initialCapital)}", color = Color.Black)
+                            } else {
+                                Text(
+                                    "Kurang: ${formatRupiah(remainingCapital)}",
+                                    fontSize = 24.sp,
+                                    fontWeight = FontWeight.Bold,
+                                    color = Color.Black
+                                )
+                                Spacer(modifier = Modifier.height(8.dp))
+                                LinearProgressIndicator(
+                                    progress = { progress.coerceIn(0f, 1f) },
+                                    modifier = Modifier.fillMaxWidth().height(8.dp),
+                                    color = Color(0xFF4CAF50),
+                                )
+                                Spacer(modifier = Modifier.height(4.dp))
+                                Text("Modal Kembali: ${(progress * 100).toInt()}%", fontSize = 12.sp, color = Color.Gray)
+                            }
                         }
                     }
                 }
-            }
 
-            // 2. SUMMARY CARDS
-            item {
-                Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(16.dp)) {
-                    SummaryCard(
-                        title = "Pemasukan",
-                        amount = totalIncome,
-                        color = Color(0xFF4CAF50),
-                        modifier = Modifier.weight(1f)
-                    )
-                    SummaryCard(
-                        title = "Pengeluaran",
-                        amount = totalExpense,
-                        color = Color(0xFFE53935),
-                        modifier = Modifier.weight(1f)
+                // 2. SUMMARY CARDS
+                item {
+                    Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(16.dp)) {
+                        SummaryCard(
+                            title = "Pemasukan",
+                            amount = totalIncome,
+                            color = Color(0xFF4CAF50),
+                            modifier = Modifier.weight(1f)
+                        )
+                        SummaryCard(
+                            title = "Pengeluaran",
+                            amount = totalExpense,
+                            color = Color(0xFFE53935),
+                            modifier = Modifier.weight(1f)
+                        )
+                    }
+                }
+
+                // 3. HEADER RIWAYAT
+                item {
+                    Text(
+                        "Riwayat Transaksi",
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 18.sp,
+                        modifier = Modifier.padding(vertical = 8.dp),
+                        color = MaterialTheme.colorScheme.onBackground
                     )
                 }
+
+                // LIST ITEM TRANSAKSI
+                items(transactions) { transaction ->
+                    TransactionItem(transaction = transaction) {
+                        viewModel.deleteTransaction(transaction)
+                    }
+                }
+
+                // Spacer Bawah
+                item { Spacer(modifier = Modifier.height(80.dp)) }
             }
 
-            // 3. HEADER RIWAYAT
-            item {
-                Text(
-                    "Riwayat Transaksi",
-                    fontWeight = FontWeight.Bold,
-                    fontSize = 18.sp,
-                    modifier = Modifier.padding(vertical = 8.dp),
-                    color = MaterialTheme.colorScheme.onBackground // Ikut tema HP (Putih di dark mode)
+            // --- LAPISAN 2: MENU OVERLAY (Muncul di atas jika showMenu = true) ---
+            if (showMenu) {
+                DashboardMenuOverlay(
+                    onDismiss = { showMenu = false }, // Tutup jika klik luar
+                    onNavigate = { route ->
+                        showMenu = false // Tutup menu dulu
+                        onNavigateToInput(route) // Pindah halaman (kirim string route)
+                    }
                 )
             }
-
-            items(transactions) { transaction ->
-                TransactionItem(transaction = transaction) {
-                    viewModel.deleteTransaction(transaction)
-                }
-            }
-
-            item { Spacer(modifier = Modifier.height(80.dp)) }
         }
     }
 }
 
+// --- KOMPONEN HELPER (Tetap sama) ---
+
 @Composable
 fun SummaryCard(title: String, amount: Double, color: Color, modifier: Modifier = Modifier) {
-    // Background kartu dibuat sedikit transparan dari warna aslinya (Hijau/Merah muda)
     Card(
         colors = CardDefaults.cardColors(containerColor = color.copy(alpha = 0.15f)),
         modifier = modifier
     ) {
         Column(modifier = Modifier.padding(16.dp)) {
-            // Judul warna abu-abu, Nilai warna sesuai (Hijau/Merah)
             Text(title, fontSize = 12.sp, color = Color.Gray)
             Text(
                 formatRupiah(amount),
@@ -177,7 +200,7 @@ fun TransactionItem(transaction: TransactionEntity, onDelete: () -> Unit) {
 
     Card(
         elevation = CardDefaults.cardElevation(2.dp),
-        colors = CardDefaults.cardColors(containerColor = Color.White), // Paksa Kartu Putih
+        colors = CardDefaults.cardColors(containerColor = Color.White),
         modifier = Modifier.fillMaxWidth()
     ) {
         Row(
@@ -197,7 +220,6 @@ fun TransactionItem(transaction: TransactionEntity, onDelete: () -> Unit) {
             Spacer(modifier = Modifier.width(12.dp))
 
             Column(modifier = Modifier.weight(1f)) {
-                // Paksa teks jadi Hitam agar terbaca di kartu putih
                 Text(transaction.category, fontWeight = FontWeight.Bold, color = Color.Black)
                 Text(
                     transaction.description,
@@ -220,13 +242,7 @@ fun TransactionItem(transaction: TransactionEntity, onDelete: () -> Unit) {
     }
 }
 
-// Fungsi format rupiah manual
 fun formatRupiah(amount: Double): String {
-    val format = java.text.NumberFormat.getCurrencyInstance(java.util.Locale("id", "ID"))
+    val format = NumberFormat.getCurrencyInstance(Locale("id", "ID"))
     return format.format(amount).replace("Rp", "Rp ").substringBefore(",00")
-}
-
-fun formatDate(millis: Long): String {
-    val formatter = java.text.SimpleDateFormat("dd MMM", java.util.Locale("id", "ID"))
-    return formatter.format(java.util.Date(millis))
 }
