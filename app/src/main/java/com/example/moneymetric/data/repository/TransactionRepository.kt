@@ -16,7 +16,7 @@ class TransactionRepository(
     private val settingDao: SettingDao
 ) {
 
-    // --- BAGIAN TRANSAKSI (TETAP SAMA) ---
+    // --- BAGIAN TRANSAKSI ---
     suspend fun insertTransaction(transaction: TransactionEntity) {
         transactionDao.insertTransaction(transaction)
     }
@@ -37,7 +37,7 @@ class TransactionRepository(
         return transactionDao.getTotalExpense()
     }
 
-    // --- BAGIAN UTANG/PIUTANG (BARU) ---
+    // --- BAGIAN UTANG/PIUTANG ---
 
     suspend fun insertDebt(debt: DebtEntity) {
         debtDao.insertDebt(debt)
@@ -65,7 +65,7 @@ class TransactionRepository(
         return debtDao.getTotalReceivable()
     }
     
-    // --- BAGIAN MODAL AWAL (DARI SETTINGS) ---
+    // --- BAGIAN MODAL AWAL ---
 
     fun getInitialCapital(): Flow<Double?> {
         return settingDao.getSetting(KEY_INITIAL_CAPITAL).map { it?.value?.toDoubleOrNull() }
