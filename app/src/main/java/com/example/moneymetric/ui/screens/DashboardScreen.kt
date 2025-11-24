@@ -34,6 +34,8 @@ fun DashboardScreen(
     // Data Live dari ViewModel
     val totalIncome by viewModel.totalIncome.collectAsState()
     val totalExpense by viewModel.totalExpense.collectAsState()
+    val totalDebt by viewModel.totalDebt.collectAsState()
+    val totalReceivable by viewModel.totalReceivable.collectAsState()
     val transactions by viewModel.allTransactions.collectAsState()
     val initialCapital by viewModel.initialCapitalState.collectAsState()
 
@@ -117,7 +119,7 @@ fun DashboardScreen(
                     }
                 }
 
-                // 2. SUMMARY CARDS
+                // 2. SUMMARY CARDS - Pemasukan & Pengeluaran
                 item {
                     Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(16.dp)) {
                         SummaryCard(
@@ -135,7 +137,25 @@ fun DashboardScreen(
                     }
                 }
 
-                // 3. HEADER RIWAYAT
+                // 3. SUMMARY CARDS - Utang & Piutang
+                item {
+                    Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(16.dp)) {
+                        SummaryCard(
+                            title = "Total Utang",
+                            amount = totalDebt,
+                            color = Color(0xFFFF9800), // Orange
+                            modifier = Modifier.weight(1f)
+                        )
+                        SummaryCard(
+                            title = "Total Piutang",
+                            amount = totalReceivable,
+                            color = Color(0xFF2196F3), // Blue
+                            modifier = Modifier.weight(1f)
+                        )
+                    }
+                }
+
+                // 4. HEADER RIWAYAT
                 item {
                     Text(
                         "Riwayat Transaksi",
