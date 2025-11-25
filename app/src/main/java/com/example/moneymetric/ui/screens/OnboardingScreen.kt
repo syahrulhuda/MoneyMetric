@@ -31,13 +31,13 @@ fun OnboardingScreen(
         verticalArrangement = Arrangement.Center
     ) {
         Image(
-            painter = painterResource(R.drawable.moneymetriclogo),
+            painter = painterResource(id = R.drawable.moneymetriclogo),
             contentDescription = "Logo Aplikasi",
             modifier = Modifier
-                .size(180.dp)
-                .padding(bottom = 5.dp)
+                .size(200.dp)
+                .padding(bottom = 0.dp)
         )
-        Text("Measure your Money Usage", fontSize = 24.sp, fontWeight = FontWeight.Bold)
+        Text("Measure your Money Usage", fontSize = 20.sp, fontWeight = FontWeight.Bold)
 
         Spacer(modifier = Modifier.height(64.dp))
 
