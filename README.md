@@ -8,6 +8,8 @@ MoneyMetric is an Android application built with Jetpack Compose that helps you 
 *   Categorize your transactions.
 *   View your financial history.
 
+Get the Android App: https://drive.google.com/file/d/1ruC9mLVce0WGIBPJZlA406tfszVgukI0/view?usp=sharing
+
 ## Getting Started
 
 To get started with MoneyMetric, you'll need to have Android Studio installed.
