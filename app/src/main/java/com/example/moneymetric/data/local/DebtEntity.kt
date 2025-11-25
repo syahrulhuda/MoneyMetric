@@ -5,7 +5,8 @@ import androidx.room.PrimaryKey
 
 @Entity(tableName = "debts")
 data class DebtEntity(
-    @PrimaryKey(autoGenerate = true) val id: Int = 0,
+    @PrimaryKey(autoGenerate = true) 
+    val id: Int = 0,
     val personName: String,         // Nama orang (misal: "Bu Siti")
     val amount: Double,             // Jumlah utang
     val type: String,               // "DEBT" atau "RECEIVABLE"
