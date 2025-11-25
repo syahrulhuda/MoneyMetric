@@ -24,7 +24,7 @@ import androidx.compose.ui.unit.sp
 @Composable
 fun DashboardMenuOverlay(
     onDismiss: () -> Unit,
-    onNavigate: (String) -> Unit // String ini adalah "rute" tujuan
+    onNavigate: (String) -> Unit
 ) {
     // Box utama untuk background gelap transparan
     Box(
