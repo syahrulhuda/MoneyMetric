@@ -79,7 +79,6 @@ fun InputTransactionScreen(
             OutlinedTextField(
                 value = amount,
                 onValueChange = { input ->
-                    // Filter: Hanya angka, maksimal 13 digit biar ga error
                     if (input.all { it.isDigit() } && input.length <= 13) {
                         amount = input
                     }
@@ -88,8 +87,6 @@ fun InputTransactionScreen(
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                 modifier = Modifier.fillMaxWidth(),
                 singleLine = true,
-
-                // --- TAMBAHKAN BARIS INI ---
                 visualTransformation = CurrencyAmountInputVisualTransformation()
             )
 
@@ -116,7 +113,6 @@ fun InputTransactionScreen(
             Button(
                 onClick = {
                     val amountDouble = amount.toDoubleOrNull() ?: 0.0
-                    // Validasi sederhana: Jumlah > 0 dan Kategori tidak kosong
                     if (amountDouble > 0 && category.isNotEmpty()) {
                         viewModel.saveTransaction(
                             amount = amountDouble,
@@ -124,14 +120,14 @@ fun InputTransactionScreen(
                             category = category,
                             description = description
                         )
-                        onNavigateBack() // Kembali ke Dashboard setelah simpan
+                        onNavigateBack()
                     }
                 },
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(50.dp),
                 colors = ButtonDefaults.buttonColors(containerColor = primaryColor),
-                enabled = amount.isNotEmpty() && category.isNotEmpty() // Matikan tombol jika kosong
+                enabled = amount.isNotEmpty() && category.isNotEmpty()
             ) {
                 Text("SIMPAN", color = Color.White)
             }

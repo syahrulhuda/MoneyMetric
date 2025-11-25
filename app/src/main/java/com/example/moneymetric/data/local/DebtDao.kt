@@ -15,7 +15,7 @@ interface DebtDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertDebt(debt: DebtEntity)
 
-    // Update status (misal: tandai lunas)
+    // Update status
     @Update
     suspend fun updateDebt(debt: DebtEntity)
 

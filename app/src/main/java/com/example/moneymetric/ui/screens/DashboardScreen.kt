@@ -42,7 +42,7 @@ fun DashboardScreen(
     val totalDebt by viewModel.totalDebt.collectAsState()
     val totalReceivable by viewModel.totalReceivable.collectAsState()
     val transactions by viewModel.allTransactions.collectAsState()
-    val debts by viewModel.allDebts.collectAsState() // Mengambil data utang
+    val debts by viewModel.allDebts.collectAsState()
     val initialCapital by viewModel.initialCapitalState.collectAsState()
 
     // Perhitungan Logika
@@ -188,7 +188,7 @@ fun DashboardScreen(
                         }
                     }
 
-                    // 5. KONTEN TAB (HISTORI)
+                    // 5. KONTEN TAB
                     when (selectedTabIndex) {
                         0 -> items(transactions) { transaction ->
                             TransactionItem(transaction = transaction) {
@@ -199,13 +199,11 @@ fun DashboardScreen(
                             DebtItem(debt = debt, viewModel = viewModel)
                         }
                     }
-
-                    // Spacer Bawah
                     item { Spacer(modifier = Modifier.height(80.dp)) }
                 }
             }
 
-            // --- LAPISAN 2: MENU OVERLAY (Muncul di atas jika showMenu = true) ---
+            // --- LAPISAN 2: MENU OVERLAY ---
             if (showMenu) {
                 DashboardMenuOverlay(
                     onDismiss = { showMenu = false },

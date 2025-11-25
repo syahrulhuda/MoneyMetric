@@ -88,7 +88,7 @@ fun MenuButton(
         Box(
             contentAlignment = Alignment.Center,
             modifier = Modifier
-                .size(80.dp) // Ukuran tombol
+                .size(80.dp)
                 .clip(CircleShape)
                 .background(color)
         ) {
@@ -100,7 +100,6 @@ fun MenuButton(
             )
         }
         Spacer(modifier = Modifier.height(8.dp))
-        // Teks Label
         Text(
             text = text,
             color = Color.White,

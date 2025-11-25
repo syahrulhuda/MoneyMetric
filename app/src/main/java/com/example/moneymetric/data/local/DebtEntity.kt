@@ -7,10 +7,10 @@ import androidx.room.PrimaryKey
 data class DebtEntity(
     @PrimaryKey(autoGenerate = true) 
     val id: Int = 0,
-    val personName: String,         // Nama orang (misal: "Bu Siti")
-    val amount: Double,             // Jumlah utang
-    val type: String,               // "DEBT" atau "RECEIVABLE"
-    val isPaid: Boolean = false,    // Status lunas?
-    val description: String,        // Catatan (misal: "Beli Gula")
-    val creationDate: Long          // Tanggal dibuat
+    val personName: String,
+    val amount: Double,
+    val type: String,
+    val isPaid: Boolean = false,
+    val description: String,
+    val creationDate: Long
 )

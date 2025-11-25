@@ -18,7 +18,6 @@ interface TransactionDao {
     suspend fun deleteTransaction(transaction: TransactionEntity)
 
     // Fungsi untuk mengambil SEMUA transaksi, diurutkan dari yang paling baru
-    // Kita pakai 'Flow' agar datanya update otomatis (Live) ke Dashboard
     @Query("SELECT * FROM transactions ORDER BY dateInMillis DESC")
     fun getAllTransactions(): Flow<List<TransactionEntity>>
 

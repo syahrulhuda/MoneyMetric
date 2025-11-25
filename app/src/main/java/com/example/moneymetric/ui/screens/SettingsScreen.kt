@@ -125,7 +125,7 @@ fun SettingsScreen(
                 .padding(innerPadding)
                 .padding(16.dp)
                 .fillMaxSize(),
-            verticalArrangement = Arrangement.spacedBy(20.dp) // Jarak antar kartu lebih lega
+            verticalArrangement = Arrangement.spacedBy(20.dp)
         ) {
 
             // --- BAGIAN 1: KEAMANAN DATA ---
@@ -138,7 +138,7 @@ fun SettingsScreen(
 
             Card(
                 colors = CardDefaults.cardColors(containerColor = Color.White),
-                elevation = CardDefaults.cardElevation(4.dp) // Shadow lebih tebal biar pop-up
+                elevation = CardDefaults.cardElevation(4.dp)
             ) {
                 Column(modifier = Modifier.padding(16.dp)) {
                     Text("Backup & Restore", fontWeight = FontWeight.Bold, fontSize = 16.sp, color = Color.Black)

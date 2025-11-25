@@ -9,12 +9,11 @@ import java.io.FileOutputStream
 
 class BackupRestoreManager(private val context: Context) {
 
-    // Nama database Room kita (sesuai di AppDatabase.kt)
     private val dbName = "moneymetric_database"
 
     fun backupData(uri: Uri) {
         try {
-            // 1. TUTUP DATABASE UNTUK MEMASTIKAN FILE KONSISTEN (checkpoint WAL)
+            // 1. TUTUP DATABASE UNTUK MEMASTIKAN FILE KONSISTEN
             AppDatabase.closeInstance()
 
             // 2. Cari file database asli di HP
@@ -43,7 +42,7 @@ class BackupRestoreManager(private val context: Context) {
             // 1. TUTUP KONEKSI DATABASE
             AppDatabase.closeInstance()
 
-            // 2. HAPUS SEMUA FILE DATABASE LAMA (PENTING!)
+            // 2. HAPUS SEMUA FILE DATABASE LAMA
             val dbFile = context.getDatabasePath(dbName)
             val walFile = File(dbFile.path + "-wal")
             val shmFile = File(dbFile.path + "-shm")
@@ -63,7 +62,6 @@ class BackupRestoreManager(private val context: Context) {
                 }
             }
 
-            // Pesan yang lebih akurat
             Toast.makeText(context, "✅ Data Pulih! Aplikasi akan dimulai ulang.", Toast.LENGTH_LONG).show()
 
         } catch (e: Exception) {

@@ -16,7 +16,7 @@ class TransactionViewModel(
     private val repository: TransactionRepository
 ) : ViewModel() {
 
-    // BAGIAN 1: TRANSAKSI (KODE LAMA - TETAP)
+    // BAGIAN 1: TRANSAKSI
 
     // 1. Data Transaksi (List)
     val allTransactions: StateFlow<List<TransactionEntity>> = repository.getAllTransactions()
@@ -44,7 +44,7 @@ class TransactionViewModel(
             initialValue = 0.0
         )
 
-    // 4. Modal Awal (BARU: dari Repository)
+    // 4. Modal Awal
     val initialCapitalState: StateFlow<Double> = repository.getInitialCapital()
         .map { it ?: 0.0 }
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), 0.0)
@@ -76,7 +76,7 @@ class TransactionViewModel(
         }
     }
 
-    // BAGIAN 2: UTANG / PIUTANG (KODE BARU)
+    // BAGIAN 2: UTANG / PIUTANG
 
     // 1. List Semua Utang/Piutang
     val allDebts: StateFlow<List<DebtEntity>> = repository.getAllDebts()
@@ -97,7 +97,7 @@ class TransactionViewModel(
 
     // 3. Total Piutang (Orang berutang ke kita)
     val totalReceivable: StateFlow<Double> = repository.getTotalReceivable()
-        .map { it ?: 0.0 } // Handle null jadi 0.0
+        .map { it ?: 0.0 }
         .stateIn(
             scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(5000),
@@ -113,14 +113,14 @@ class TransactionViewModel(
                 amount = amount,
                 type = type, // "DEBT" atau "RECEIVABLE"
                 description = description,
-                isPaid = false, // Default belum lunas
+                isPaid = false,
                 creationDate = System.currentTimeMillis()
             )
             repository.insertDebt(newDebt)
 
             // 2. Buat transaksi otomatis yang sesuai
             when (type) {
-                "RECEIVABLE" -> { // Kita memberi pinjaman -> Uang Keluar
+                "RECEIVABLE" -> {
                     saveTransaction(
                         amount = amount,
                         type = "EXPENSE",
@@ -128,7 +128,7 @@ class TransactionViewModel(
                         description = "Memberi pinjaman ke $personName"
                     )
                 }
-                "DEBT" -> { // Kita menerima pinjaman -> Uang Masuk
+                "DEBT" -> {
                     saveTransaction(
                         amount = amount,
                         type = "INCOME",
@@ -178,7 +178,7 @@ class TransactionViewModel(
     }
 }
 
-// Factory (BARU: Disederhanakan)
+// Factory
 class TransactionViewModelFactory(
     private val repository: TransactionRepository
 ) : ViewModelProvider.Factory {

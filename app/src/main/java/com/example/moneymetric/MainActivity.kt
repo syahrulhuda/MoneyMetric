@@ -18,12 +18,10 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             MoneyMetricTheme {
-                // Surface adalah kanvas dasar (background putih) aplikasi
                 Surface(
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    // Memanggil file navigasi yang sudah kita buat
                     AppNavigation()
                 }
             }

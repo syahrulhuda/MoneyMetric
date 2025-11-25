@@ -17,7 +17,6 @@ class CurrencyAmountInputVisualTransformation(
 
         val intValue = inputText.toLongOrNull() ?: return TransformedText(text, OffsetMapping.Identity)
 
-        // Format ke Rupiah (tanpa simbol Rp dan ,00 agar bersih di input)
         val formatted = NumberFormat.getNumberInstance(Locale("id", "ID")).format(intValue)
 
         val newText = AnnotatedString("Rp $formatted")
@@ -26,7 +25,6 @@ class CurrencyAmountInputVisualTransformation(
             override fun originalToTransformed(offset: Int): Int {
                 if (inputText.isEmpty()) return 0
                 if (fixedCursorAtTheEnd) return newText.length
-                // Logic sederhana: kursor selalu di akhir agar tidak pusing
                 return newText.length
             }
 
